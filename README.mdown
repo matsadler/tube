@@ -1,0 +1,52 @@
+Tube/Status
+===========
+
+A simple MIT licensed Ruby library to access the status of the London Underground network as displayed on the Transport for London [Live travel news](http://www.tfl.gov.uk/tfl/livetravelnews/realtime/tube/default.html) page.
+
+Examples
+--------
+    require 'tube/status'
+    
+    status = Tube::Status.get
+    
+    broken_lines = status.lines.select {|line| line.problem?}
+    broken_lines.collect {|line| line.name}
+    #=> ["Circle", "District", "Jubilee", "Metropolitan", "Northern"]
+    
+    status.line(:circle).message
+    #=> "Saturday 7 and Sunday 8 March, suspended."
+    
+    closed_stations = status.station_group(:closed)
+    closed_stations.collect {|station| station.name}
+    #=> ["Blackfriars", "Hatton Cross"]
+    
+    status.find_station("hatton").message
+    #=> "Saturday 7 and Sunday 8 March, closed."
+    
+    status.updated.strftime("%I:%M%p")
+    #=> "04:56PM"
+    
+    status.reload
+    status.updated.strftime("%I:%M%p")
+    #=> "05:00PM"
+
+See the [documentation](http://sourcetagsandcodes.com/codes/tube_status/doc/) for more details.
+
+Output JSON and XML
+-------------------
+Can convert the status data to XML or JSON, although this requires REMXL and the [Ruby JSON library](http://json.rubyforge.org/), which are not loaded by default.
+
+### XML
+    require 'rexml/document'
+    
+    status.line(:central).to_xml
+    #=> "<line><id>central</id><status>Good service</status>
+        <problem>false</problem><message/><name>Central</name></line>"
+
+### JSON
+    require 'rubygems'
+    require 'json'
+    
+    status.line(:central).to_json
+    #=> '{"id":"central", "status":"Good service", "problem":false,
+        "message":null, "name":"Central"}'
