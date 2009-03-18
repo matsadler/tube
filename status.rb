@@ -117,8 +117,8 @@ module Tube # :nodoc:
       doc.search( "dl#stations dt" ).each do |el|
         station_group = StationGroup.new( el.inner_text.strip )
         while el = el.next_sibling
-          if el.to_html =~ /^<dd/
-            name = el.at( "h3" ).inner_text.strip
+          if el.to_html =~ /^<dd/ && name_el = el.at( "h3" )
+            name = name_el.inner_text.strip
             message = el.at( "div.message p" ).inner_text.strip
             station = Station.new( name, message )
             station_group.push( station )
