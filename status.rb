@@ -298,8 +298,10 @@ module Tube # :nodoc:
     # 
     def format_messages( messages )
       text_messages = messages.map do |message|
-        message.children.select {|child| child.text?}.join( " " )
-      end
+        if message.children
+          message.children.select {|child| child.text?}.join( " " )
+        end
+      end.compact
       text_messages.reject! {|m| m.empty?}
       text_messages.map {|m| m.gsub( /\s+/, " " ).strip}.join( "\n" )
     end
