@@ -93,8 +93,10 @@ module Tube # :nodoc:
     def reload
       doc = Hpricot( open( @url ) )
       
-      time = doc.at( "div#service-board" ).previous_sibling.children.first
-      @updated = Time.parse( time.inner_text.match( /(\d?\d:\d\d(a|p)m)/ )[0] )
+      time_el = doc.at( "div#service-board" ).previous_sibling.children.first
+      time_text = time_el.inner_text.match( /(\d?\d:\d\d(a|p)m)/ )[0]
+      time_zone = if is_bst? then "BST" else "GMT" end
+      @updated = Time.parse( "#{time_text} #{time_zone}" )
       
       lines = doc.search( "dl#lines dt" ).map do |el|
         id = el.attributes["class"]
@@ -300,6 +302,30 @@ module Tube # :nodoc:
       end
       text_messages.reject! {|m| m.empty?}
       text_messages.map {|m| m.gsub( /\s+/, " " ).strip}.join( "\n" )
+    end
+    
+    # :call-seq: is_bst? -> bool
+    # 
+    # Is British Summer Time currently in effect.
+    # 
+    def is_bst?
+      bst_start = last_sunday_of_preceding_month( "april" )
+      bst_end = last_sunday_of_preceding_month( "november" )
+      
+      one_hour = 3600
+      bst_start = Time.gm(bst_start.year, bst_start.month) + one_hour
+      bst_end = Time.gm(bst_end.year, bst_end.month) + one_hour
+      
+      (bst_start..bst_end).include?(Time.now.getgm)
+    end
+    
+    # :call-seq: last_sunday_of_preceding_month(month_name) -> date
+    # 
+    def last_sunday_of_preceding_month( month_name )
+      start_of_preceding_month = Date.parse( month_name )
+      week_day = start_of_preceding_month.wday
+      distance_from_sunday = if week_day == 0 then 7 else week_day end
+      start_of_preceding_month - distance_from_sunday
     end
     
   end
