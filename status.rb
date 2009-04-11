@@ -103,7 +103,7 @@ module Tube # :nodoc:
         status = el.next_sibling
         if status_el = status.at( "h3" )
           status_text = status_el.inner_text.strip
-          message = status.at( "div.message p" ).inner_text.strip
+          message = format_messages( status.search( "div.message p" ) )
         else
           status_text = status.inner_text.strip
         end
@@ -119,7 +119,7 @@ module Tube # :nodoc:
         while el = el.next_sibling
           if el.to_html =~ /^<dd/ && name_el = el.at( "h3" )
             name = name_el.inner_text.strip
-            message = el.at( "div.message p" ).inner_text.strip
+            message = format_messages( el.search( "div.message p" ) )
             station = Station.new( name, message )
             station_group.push( station )
           elsif el.to_html =~ /^<dt/
@@ -279,6 +279,27 @@ module Tube # :nodoc:
       root.add_element( lines.to_xml( false ) )
       root.add_element( station_groups.to_xml( false ) )
       if as_string then doc.to_s else doc end
+    end
+    
+    private
+    
+    # :call-seq: format_messages(messages) -> string
+    # 
+    # Takes an array of elements, strips those elements of elements they contain
+    # and returns only the text within the root elements.
+    #  <p>Suspended. Rail replacement bus services operate.</p>
+    #  <p>Service A: ...</p>
+    #  <p><a href="/transform">See how we are transforming the Tube</a></p>
+    # becomes
+    #  Suspended. Rail replacement bus services operate.
+    #  Service A: ...
+    # 
+    def format_messages( messages )
+      text_messages = messages.map do |message|
+        message.children.select {|child| child.text?}.join( " " )
+      end
+      text_messages.reject! {|m| m.empty?}
+      text_messages.map {|m| m.gsub( /\s+/, " " ).strip}.join( "\n" )
     end
     
   end
