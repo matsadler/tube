@@ -95,8 +95,8 @@ module Tube # :nodoc:
       
       time_el = doc.at( "div#service-board" ).previous_sibling.children.first
       time_text = time_el.inner_text.match( /(\d?\d:\d\d(a|p)m)/ )[0]
-      time_zone = if is_bst? then "BST" else "GMT" end
-      @updated = Time.parse( "#{time_text} #{time_zone}" )
+      time_zone = if is_bst? then "+0100" else "+0000" end
+      @updated = Time.parse( "#{time_text} #{time_zone}" ).getgm
       
       lines = doc.search( "dl#lines dt" ).map do |el|
         id = el.attributes["class"]
