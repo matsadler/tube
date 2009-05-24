@@ -3,6 +3,11 @@ Tube/Status
 
 A simple MIT licensed Ruby library to access the status of the London Underground network as displayed on the Transport for London [Live travel news](http://www.tfl.gov.uk/tfl/livetravelnews/realtime/tube/default.html) page.
 
+Installation
+------------
+
+    $ gem install matsadler-tube --source http://gems.github.com
+
 Examples
 --------
     require 'tube/status'
