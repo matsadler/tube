@@ -2,7 +2,6 @@ module Tube # :nodoc:
   
   # Really just an array that can have a name, plus appropriate #to_json and
   # #to_xml methods.
-  # Require 'json' and 'rexml/document' if you want to use these methods.
   # 
   class StationGroup < Array
     attr_reader :name

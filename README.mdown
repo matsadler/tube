@@ -34,19 +34,14 @@ See the [documentation](http://sourcetagsandcodes.com/codes/tube_status/doc/) fo
 
 Output JSON and XML
 -------------------
-Can convert the status data to XML or JSON, although this requires REMXL and the [Ruby JSON library](http://json.rubyforge.org/), which are not loaded by default.
+Can convert the status data to XML or JSON, using the REMXL and [Ruby JSON](http://json.rubyforge.org/) libraries.
 
 ### XML
-    require 'rexml/document'
-    
     status.line(:central).to_xml
     #=> "<line><id>central</id><status>Good service</status>
         <problem>false</problem><message/><name>Central</name></line>"
 
 ### JSON
-    require 'rubygems'
-    require 'json'
-    
     status.line(:central).to_json
     #=> '{"id":"central", "status":"Good service", "problem":false,
         "message":null, "name":"Central"}'

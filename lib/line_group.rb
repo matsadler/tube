@@ -1,7 +1,6 @@
 module Tube # :nodoc:
   
   # Really just an array with an appropriate #to_xml method.
-  # Require 'rexml/document' if you want to use this method.
   # 
   class LineGroup < Array
     

@@ -3,9 +3,6 @@ module Tube # :nodoc:
   # Models the data gathered on a tube line from the tfl.gov.uk "Live travel
   # news" page.
   # 
-  # Comes complete with #to_json and #to_xml methods, but these will need 'json'
-  # and 'rexml/document' respectively to be loaded to function.
-  # 
   class Line
     attr_reader :id
     attr_accessor :status, :problem, :message, :name

@@ -1,7 +1,6 @@
 module Tube # :nodoc:
   
   # Really just an array with appropriate #to_json and #to_xml methods.
-  # Require 'json' and 'rexml/document' if you want to use these methods.
   # 
   class StationGroupGroup < Array
     

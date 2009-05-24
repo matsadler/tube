@@ -37,20 +37,14 @@ module Tube # :nodoc:
   # 
   # ==Converting to JSON and XML
   # All objects come complete with #to_json and #to_xml methods. These depend
-  # upon the ruby json and REXML libraries, which must be loaded for the methods
-  # to function.
+  # upon the ruby json and REXML libraries.
   # 
   # ===XML
-  #  require 'rexml/document'
-  #  
   #  status.line(:central).to_xml
   #  #=> "<line><id>central</id><status>Good service</status>
   #      <problem>false</problem><message/><name>Central</name></line>"
   # 
   # ===JSON
-  #  require 'rubygems'
-  #  require 'json'
-  #  
   #  status.line(:central).to_json
   #  #=> '{"id":"central", "status":"Good service", "problem":false,
   #      "message":null, "name":"Central"}'

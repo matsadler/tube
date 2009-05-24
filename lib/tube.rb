@@ -2,6 +2,8 @@ require 'rubygems'
 require 'hpricot'
 require 'open-uri'
 require 'time'
+require 'json'
+require 'rexml/document'
 
 require 'line'
 require 'station'
