@@ -1,14 +1,3 @@
-require 'rubygems'
-require 'hpricot'
-require 'open-uri'
-require 'time'
-
-require 'tube/line'
-require 'tube/station'
-require 'tube/line_group'
-require 'tube/station_group'
-require 'tube/station_group_group'
-
 module Tube # :nodoc:
   
   # Models the status of the London Underground network as displayed on
