@@ -195,7 +195,7 @@ module Tube # :nodoc:
       when Symbol
         stations = stations.select {|station| station.name == name.to_s}
       when Array
-        stations = name.map {|n| search_stations( n )}.flatten.uniq
+        stations = name.map {|n| find_stations( n )}.flatten.uniq
       when nil
         stations
       end
