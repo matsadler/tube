@@ -76,43 +76,30 @@ module Tube # :nodoc:
     def reload
       doc = Hpricot( open( @url ) )
       
-      time_el = doc.at( "div#service-board" ).previous_sibling.children.first
-      time_text = time_el.inner_text.match( /(\d?\d:\d\d(a|p)m)/ )[0]
-      time_zone = if is_bst? then "+0100" else "+0000" end
-      @updated = Time.parse( "#{time_text} #{time_zone}" )
+      results = Tube::StatusParser.parse( doc )
       
-      lines = doc.search( "dl#lines dt" ).map do |el|
-        id = el.attributes["class"]
-        name = el.inner_text.strip
-        
-        status = el.next_sibling
-        if status_el = status.at( "h3" )
-          status_text = status_el.inner_text.strip
-          message = format_messages( status.search( "div.message p" ) )
-        else
-          status_text = status.inner_text.strip
-        end
-        problem = status.attributes["class"] == "problem"
+      @updated = results[:updated]
+      
+      lines = results[:lines].map do |line|
+        id = line[:html_class]
+        name = line[:name]
+        status_text = line[:status][:headline]
+        problem = line[:status][:problem]
+        message = line[:status][:message]
         
         Line.new( id, status_text, problem, message, name )
       end
       @lines = LineGroup.new( lines )
       
-      @station_groups = StationGroupGroup.new
-      doc.search( "dl#stations dt" ).each do |el|
-        station_group = StationGroup.new( el.inner_text.strip )
-        while el = el.next_sibling
-          if el.to_html =~ /^<dd/ && name_el = el.at( "h3" )
-            name = name_el.inner_text.strip
-            message = format_messages( el.search( "div.message p" ) )
-            station = Station.new( name, message )
-            station_group.push( station )
-          elsif el.to_html =~ /^<dt/
-            break
-          end
+      station_groups = results[:station_groups].map do |station_group|
+        stations = station_group[:stations].map do |station|
+          Station.new( station[:name], station[:message] )
         end
-        @station_groups.push( station_group )
+        
+        StationGroup.new( station_group[:name], stations )
       end
+      
+      @station_groups = StationGroupGroup.new( station_groups )
       
       self
     end
@@ -264,53 +251,6 @@ module Tube # :nodoc:
       root.add_element( lines.to_xml( false ) )
       root.add_element( station_groups.to_xml( false ) )
       if as_string then doc.to_s else doc end
-    end
-    
-    private
-    
-    # :call-seq: format_messages(messages) -> string
-    # 
-    # Takes an array of elements, strips those elements of elements they contain
-    # and returns only the text within the root elements.
-    #  <p>Suspended. Rail replacement bus services operate.</p>
-    #  <p>Service A: ...</p>
-    #  <p><a href="/transform">See how we are transforming the Tube</a></p>
-    # becomes
-    #  Suspended. Rail replacement bus services operate.
-    #  Service A: ...
-    # 
-    def format_messages( messages )
-      text_messages = messages.map do |message|
-        if message.children
-          message.children.select {|child| child.text?}.join( " " )
-        end
-      end.compact
-      text_messages.reject! {|m| m.empty?}
-      text_messages.map {|m| m.gsub( /\s+/, " " ).strip}.join( "\n" )
-    end
-    
-    # :call-seq: is_bst? -> bool
-    # 
-    # Is British Summer Time currently in effect.
-    # 
-    def is_bst?
-      bst_start = last_sunday_of_preceding_month( "april" )
-      bst_end = last_sunday_of_preceding_month( "november" )
-      
-      one_hour = 3600
-      bst_start = Time.gm(bst_start.year, bst_start.month) + one_hour
-      bst_end = Time.gm(bst_end.year, bst_end.month) + one_hour
-      
-      (bst_start..bst_end).include?(Time.now.getgm)
-    end
-    
-    # :call-seq: last_sunday_of_preceding_month(month_name) -> date
-    # 
-    def last_sunday_of_preceding_month( month_name )
-      start_of_preceding_month = Date.parse( month_name )
-      week_day = start_of_preceding_month.wday
-      distance_from_sunday = if week_day == 0 then 7 else week_day end
-      start_of_preceding_month - distance_from_sunday
     end
     
   end
