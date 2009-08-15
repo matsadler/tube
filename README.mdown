@@ -12,20 +12,21 @@ Examples
 --------
     require 'tube/status'
     
-    status = Tube::Status.get
+    status = Tube::Status.new
     
     broken_lines = status.lines.select {|line| line.problem?}
     broken_lines.collect {|line| line.name}
     #=> ["Circle", "District", "Jubilee", "Metropolitan", "Northern"]
     
-    status.line(:circle).message
+    status.lines.detect {|line| line.id == "circle"}.message
     #=> "Saturday 7 and Sunday 8 March, suspended."
     
-    closed_stations = status.station_group(:closed)
+    closed_stations = status.station_groups["Closed stations"]
     closed_stations.collect {|station| station.name}
     #=> ["Blackfriars", "Hatton Cross"]
     
-    status.find_station("hatton").message
+    stations = status.station_groups.values.flatten
+    stations.detect {|station| station.name =~ "hatton"}.message
     #=> "Saturday 7 and Sunday 8 March, closed."
     
     status.updated.strftime("%I:%M%p")
@@ -36,17 +37,3 @@ Examples
     #=> "05:00PM"
 
 See the [documentation](http://sourcetagsandcodes.com/codes/tube_status/doc/) for more details.
-
-Output JSON and XML
--------------------
-Can convert the status data to XML or JSON, using the REMXL and [Ruby JSON](http://json.rubyforge.org/) libraries.
-
-### XML
-    status.line(:central).to_xml
-    #=> "<line><id>central</id><status>Good service</status>
-        <problem>false</problem><message/><name>Central</name></line>"
-
-### JSON
-    status.line(:central).to_json
-    #=> '{"id":"central", "status":"Good service", "problem":false,
-        "message":null, "name":"Central"}'

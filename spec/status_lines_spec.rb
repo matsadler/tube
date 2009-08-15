@@ -10,7 +10,7 @@ require 'tube'
 describe "Tube::Status#lines" do
   
   before( :all ) do
-    @status = Tube::Status.get( "fixtures/2009-05-24-18-26-23.html" )
+    @status = Tube::Status.new( "fixtures/2009-05-24-18-26-23.html" )
   end
   
   it "should have been pulled from the source page" do

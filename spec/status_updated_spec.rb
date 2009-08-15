@@ -11,7 +11,7 @@ describe "Tube::Status#updated" do
   end
   
   it "should have been pulled from the source page" do
-    status = Tube::Status.get( @fixture )
+    status = Tube::Status.new( @fixture )
     status.updated.class.should == Time
   end
   
@@ -19,7 +19,7 @@ describe "Tube::Status#updated" do
   # how to fix that without writing or using a whole bunch of code that needs
   # testing itself.
   it "should be the correct time" do
-    status = Tube::Status.get( @fixture )
+    status = Tube::Status.new( @fixture )
     status.updated.should == Time.parse( "6:26pm" )
   end
   
@@ -27,7 +27,7 @@ describe "Tube::Status#updated" do
     bst_time = Time.parse( "August 1" )
     Time.stub!( :now ).and_return( bst_time )
     
-    status = Tube::Status.get( @fixture )
+    status = Tube::Status.new( @fixture )
     status.updated.gmt_offset.should == 3600
   end
   
@@ -35,7 +35,7 @@ describe "Tube::Status#updated" do
     non_bst_time = Time.parse( "January 1" )
     Time.stub!( :now ).and_return( non_bst_time )
     
-    status = Tube::Status.get( @fixture )
+    status = Tube::Status.new( @fixture )
     status.updated.gmt_offset.should == 0
   end
   
