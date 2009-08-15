@@ -1,3 +1,9 @@
+require 'open-uri'
+
+require 'tube/status_parser'
+require 'tube/line'
+require 'tube/station'
+
 module Tube # :nodoc:
   
   # Models the status of the London Underground network as displayed on

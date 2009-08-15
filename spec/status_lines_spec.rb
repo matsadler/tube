@@ -2,7 +2,7 @@ require 'rubygems'
 require 'spec'
 
 $: << File.expand_path(File.dirname(__FILE__) + "/../lib")
-require 'tube'
+require 'tube/status'
 
 # These tests are very tightly bound to the fixture, but that can't be helped,
 # the whole point it to make sure the right data is being pulled from it.

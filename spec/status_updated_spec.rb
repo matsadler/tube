@@ -2,7 +2,7 @@ require 'rubygems'
 require 'spec'
 
 $: << File.expand_path(File.dirname(__FILE__) + "/../lib")
-require 'tube'
+require 'tube/status'
 
 describe "Tube::Status#updated" do
   

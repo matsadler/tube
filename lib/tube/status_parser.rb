@@ -1,3 +1,8 @@
+require 'time'
+require 'date'
+require 'rubygems'
+require 'hpricot'
+
 module Tube # :nodoc:
   module StatusParser
     extend self
