@@ -8,9 +8,7 @@ module Tube # :nodoc:
     extend self
     
     def parse( html_doc )
-      doc = Hpricot( html_doc )
-      
-      service_board = doc.at( "#service-board" )
+      service_board = Hpricot( html_doc ).at( "#service-board" )
       
       updated_element = service_board.previous_sibling.children.first
       updated = parse_updated( updated_element )
@@ -74,7 +72,7 @@ module Tube # :nodoc:
     
     def parse_station( station_element )
       name = station_element.at( "h3" ).inner_text.strip
-      message = parse_status_message( station_element.search( "div.message p" ) )
+      message = parse_status_message( station_element.search("div.message p") )
       
       {:name => name, :message => message}
     end

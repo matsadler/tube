@@ -18,7 +18,7 @@ Examples
     broken_lines.collect {|line| line.name}
     #=> ["Circle", "District", "Jubilee", "Metropolitan", "Northern"]
     
-    status.lines.detect {|line| line.id == "circle"}.message
+    status.lines.detect {|line| line.id == :circle}.message
     #=> "Saturday 7 and Sunday 8 March, suspended."
     
     closed_stations = status.station_groups["Closed stations"]

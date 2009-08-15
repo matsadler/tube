@@ -5,19 +5,19 @@ module Tube # :nodoc:
   # 
   class Line
     attr_reader :id
-    attr_accessor :status, :problem, :message, :name
+    attr_accessor :name, :status, :problem, :message
     alias_method :problem?, :problem
     
-    # :call-seq: Line.new(id, status, problem=false, message=nil, name=nil)
+    # :call-seq: Line.new(id, name, status, problem, message=nil)
     # 
-    # Create a new Line. If name is ommited it will be set to id.
+    # Create a new Line.
     # 
-    def initialize( id, status, problem=false, message=nil, name=nil )
+    def initialize( id, name, status, problem, message=nil )
       @id = id
+      @name = name
       @status = status
       @problem = problem
       @message = message
-      @name = name || @id
     end
     
   end

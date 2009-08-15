@@ -24,7 +24,7 @@ module Tube # :nodoc:
   #  broken_lines.collect {|line| line.name}
   #  #=> ["Circle", "District", "Jubilee", "Metropolitan", "Northern"]
   #  
-  #  status.lines.detect {|line| line.id == "circle"}.message
+  #  status.lines.detect {|line| line.id == :circle}.message
   #  #=> "Saturday 7 and Sunday 8 March, suspended."
   #  
   #  closed_stations = status.station_groups["Closed stations"]
@@ -52,20 +52,17 @@ module Tube # :nodoc:
     # 
     def initialize( url=
         "http://www.tfl.gov.uk/tfl/livetravelnews/realtime/tube/default.html" )
-      @url = url
-      
-      results = Tube::StatusParser.parse( open( @url ) )
-      
+      results = Tube::StatusParser.parse( open( url ) )
       @updated = results[:updated]
       
       @lines = results[:lines].map do |line|
-        id = line[:html_class]
+        id = line[:html_class].to_sym
         name = line[:name]
-        status_text = line[:status][:headline]
+        status = line[:status][:headline]
         problem = line[:status][:problem]
         message = line[:status][:message]
         
-        Line.new( id, status_text, problem, message, name )
+        Line.new( id, name, status, problem, message )
       end
       
       @station_groups = results[:station_groups].inject( {} ) do |memo, group|
