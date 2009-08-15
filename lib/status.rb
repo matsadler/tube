@@ -48,9 +48,7 @@ module Tube # :nodoc:
         "http://www.tfl.gov.uk/tfl/livetravelnews/realtime/tube/default.html" )
       @url = url
       
-      doc = Hpricot( open( @url ) )
-      
-      results = Tube::StatusParser.parse( doc )
+      results = Tube::StatusParser.parse( open( @url ) )
       
       @updated = results[:updated]
       

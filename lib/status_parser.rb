@@ -2,8 +2,10 @@ module Tube # :nodoc:
   module StatusParser
     extend self
     
-    def parse( hpricot_doc )
-      service_board = hpricot_doc.at( "#service-board" )
+    def parse( html_doc )
+      doc = Hpricot( html_doc )
+      
+      service_board = doc.at( "#service-board" )
       
       updated_element = service_board.previous_sibling.children.first
       updated = parse_updated( updated_element )
