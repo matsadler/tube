@@ -4,7 +4,7 @@ require 'rubygems'
 require 'hpricot'
 
 module Tube # :nodoc:
-  module StatusParser
+  module StatusParser # :nodoc:
     extend self
     
     def parse( html_doc )

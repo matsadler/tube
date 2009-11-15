@@ -6,7 +6,7 @@ module Tube # :nodoc:
   class Line
     attr_reader :id
     attr_accessor :name, :status, :problem, :message
-    alias_method :problem?, :problem
+    alias problem? problem
     
     # :call-seq: Line.new(id, name, status, problem, message=nil)
     # 
