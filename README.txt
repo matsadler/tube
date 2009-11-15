@@ -1,15 +1,12 @@
-Tube/Status
-===========
+= Tube/Status
 
-A simple MIT licensed Ruby library to access the status of the London Underground network as displayed on the Transport for London [Live travel news](http://www.tfl.gov.uk/tfl/livetravelnews/realtime/tube/default.html) page.
+A simple MIT licensed Ruby library to access the status of the London Underground network as displayed on the Transport for London {Live travel news}[http://www.tfl.gov.uk/tfl/livetravelnews/realtime/tube/default.html] page.
 
-Installation
-------------
+== Installation
 
-    $ gem install matsadler-tube --source http://gems.github.com
+    $ gem install tube --source http://gemcutter.org
 
-Examples
---------
+== Examples
     require 'tube/status'
     
     status = Tube::Status.new
@@ -36,4 +33,4 @@ Examples
     status.updated.strftime("%I:%M%p")
     #=> "05:00PM"
 
-See the [documentation](http://sourcetagsandcodes.com/codes/tube_status/doc/) for more details.
+See the {documentation}[http://sourcetagsandcodes.com/codes/tube_status/doc/] for more details.
