@@ -1,21 +1,16 @@
 Gem::Specification.new do |s|
   s.name = "tube"
-  s.version = "0.1.2"
- 
-  s.specification_version = 2 if s.respond_to? :specification_version=
- 
-  s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
-  s.authors = ["Mat Sadler"]
-  s.date = %q{2009-08-01}
-  s.description = %q{A simple Ruby library to access the status of the London Underground network.}
-  s.email = %q{mat@sourcetagsandcodes.com}
-  s.files = ["lib/line.rb", "lib/status_parser.rb", "lib/station.rb", "lib/status.rb", "lib/tube.rb"]
+  s.version = "0.2.0"
+  s.summary = "Access the status of the London Underground network."
+  s.description = "A simple Ruby library to access the status of the London Underground network."
+  s.files = ["lib/tube/line.rb", "lib/tube/station.rb", "lib/tube/status.rb", "lib/tube/status_parser.rb", "test/dummy.html", "test/status_parser_test.rb"]
+  s.test_files = ["test/status_parser_test.rb"]
+  s.require_path = "lib"
   s.has_rdoc = true
-  s.homepage = %q{http://github.com/matsadler/tube}
-  s.rdoc_options = ["--line-numbers", "--inline-source", "--title", "Tube", "--main", "Tube::Status"]
-  s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.1.1}
-  s.summary = %q{A simple Ruby library to access the status of the London Underground network.}
-  
+  s.extra_rdoc_files = ["README.txt"]
+  s.rdoc_options << "--main" << "README.txt"
+  s.author = "Matthew Sadler"
+  s.email = "mat@sourcetagsandcodes.com"
+  s.homepage = "http://github.com/matsadler/tube"
   s.add_dependency('hpricot', [">= 0.8.1"])
 end
