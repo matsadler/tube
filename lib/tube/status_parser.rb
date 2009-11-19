@@ -8,6 +8,7 @@ module Tube # :nodoc:
     extend self
     
     def parse( html_doc )
+      html_doc.gsub!("&nbsp;", " ")
       service_board = Hpricot( html_doc ).at( "#service-board" )
       
       updated_element = service_board.previous_sibling.children.first
