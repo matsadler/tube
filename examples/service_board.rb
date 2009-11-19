@@ -24,8 +24,8 @@ PROBLEM_COLOR = STATUS_COLOR + [:negative]
 
 status = Tube::Status.new
 
-longest_name = status.lines.map {|l| l.name}.max.length
-longest_status = status.lines.map {|l| l.status}.max.length
+longest_name = status.lines.map {|l| l.name.length}.max
+longest_status = status.lines.map {|l| l.status.length}.max
 formatted_time = status.updated.strftime("%I:%M%p").downcase.sub(/^0/, "")
 
 puts "  Live travel news".style(:bold), "  Last update: #{formatted_time}", ""
