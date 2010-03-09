@@ -4,7 +4,7 @@ require "#{File.dirname( __FILE__ )}/../lib/tube/status"
 
 class TestStatusParser < Test::Unit::TestCase
   def test_parse_updated
-    document = Hpricot("<h2>Service update at 6:26pm</h2>")
+    document = Hpricot("<h2>Service update at 18:26</h2>")
     element = document.at("h2")
     result = Tube::StatusParser.parse_updated(element)
     
@@ -12,7 +12,7 @@ class TestStatusParser < Test::Unit::TestCase
   end
   
   def test_parse_updated_with_anchor_in_element
-    document = Hpricot(%Q{<h2>Service update at 12:12pm <a href="/later.html">View engineering works planned for later today</a></h2>})
+    document = Hpricot(%Q{<h2>Service update at 12:12 <a href="/later.html">View engineering works planned for later today</a></h2>})
     element = document.at("h2")
     result = Tube::StatusParser.parse_updated(element)
     
@@ -121,7 +121,7 @@ class TestStatusParser < Test::Unit::TestCase
   def test_parse
     # the file used here is an approximation of the most important bits of the
     # Live travel news at http://www.tfl.gov.uk/tfl/livetravelnews/realtime/tube/default.html
-    document = open("#{File.dirname( __FILE__ )}/dummy.html")
+    document = open("#{File.dirname( __FILE__ )}/dummy.html").read
     result = Tube::StatusParser.parse(document)
     
     assert(result)

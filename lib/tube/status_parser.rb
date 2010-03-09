@@ -27,7 +27,7 @@ module Tube # :nodoc:
     end
     
     def parse_updated( updated_element )
-      time_text = updated_element.inner_text.match( /(\d?\d:\d\d(a|p)m)/ )[0]
+      time_text = updated_element.inner_text.match( /(\d?\d:\d\d)/ )[0]
       time_zone = if is_bst? then "+0100" else "+0000" end
       
       Time.parse( "#{time_text} #{time_zone}" )
