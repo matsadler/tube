@@ -52,7 +52,7 @@ module Tube # :nodoc:
     # 
     def initialize( url=
         "http://www.tfl.gov.uk/tfl/livetravelnews/realtime/tube/default.html" )
-      results = Tube::StatusParser.parse( open( url ) )
+      results = Tube::StatusParser.parse( open( url ).read )
       @updated = results[:updated]
       
       @lines = results[:lines].map do |line|
