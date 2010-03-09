@@ -100,8 +100,12 @@ module Tube # :nodoc:
       bst_end = last_sunday_of_month( "october" )
       
       one_hour = 3600
-      bst_start = Time.gm( bst_start.year, bst_start.month ) + one_hour
-      bst_end = Time.gm( bst_end.year, bst_end.month ) + one_hour
+      
+      bst_start = Time.gm( bst_start.year, bst_start.month, bst_start.day )
+      bst_start += one_hour
+      
+      bst_end = Time.gm( bst_end.year, bst_end.month, bst_end.day )
+      bst_end += one_hour
       
       (bst_start..bst_end).include?( Time.now.getgm )
     end
