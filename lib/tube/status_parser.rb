@@ -14,14 +14,10 @@ module Tube # :nodoc:
       updated_element = service_board.previous_element
       updated = parse_updated( updated_element )
       
-      lines = service_board.css( "dl#lines dt" ).map do |line_element|
-        parse_line( line_element )
-      end
+      lines = service_board.css( "dl#lines dt" ).map( &method( :parse_line ) )
       
       station_group_elements = service_board.css( "dl#stations dt" )
-      station_groups = station_group_elements.map do |station_group_element|
-        parse_station_group( station_group_element )
-      end
+      station_groups = station_group_elements.map(&method(:parse_station_group))
       
       {:updated => updated, :lines => lines, :station_groups => station_groups}
     end
