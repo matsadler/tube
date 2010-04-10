@@ -4,7 +4,7 @@ A simple MIT licensed Ruby library to access the status of the London Undergroun
 
 == Installation
 
-    $ gem install tube --source http://gemcutter.org
+    $ gem install tube
 
 == Examples
     require 'tube/status'
