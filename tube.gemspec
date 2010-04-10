@@ -7,8 +7,8 @@ Gem::Specification.new do |s|
   s.test_files = ["test/status_parser_test.rb"]
   s.require_path = "lib"
   s.has_rdoc = true
-  s.extra_rdoc_files = ["README.txt"]
-  s.rdoc_options << "--main" << "README.txt"
+  s.extra_rdoc_files = ["README.rdoc"]
+  s.rdoc_options << "--main" << "README.rdoc"
   s.author = "Matthew Sadler"
   s.email = "mat@sourcetagsandcodes.com"
   s.homepage = "http://github.com/matsadler/tube"
