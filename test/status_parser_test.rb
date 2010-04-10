@@ -4,24 +4,24 @@ require "#{File.dirname( __FILE__ )}/../lib/tube/status"
 
 class TestStatusParser < Test::Unit::TestCase
   def test_parse_updated
-    document = Hpricot("<h2>Service update at 18:26</h2>")
-    element = document.at("h2")
+    document = Nokogiri::HTML("<h2>Service update at 18:26</h2>")
+    element = document.at_css("h2")
     result = Tube::StatusParser.parse_updated(element)
     
     assert_equal(Time.parse("6:26pm"), result)
   end
   
   def test_parse_updated_with_anchor_in_element
-    document = Hpricot(%Q{<h2>Service update at 12:12 <a href="/later.html">View engineering works planned for later today</a></h2>})
-    element = document.at("h2")
+    document = Nokogiri::HTML(%Q{<h2>Service update at 12:12 <a href="/later.html">View engineering works planned for later today</a></h2>})
+    element = document.at_css("h2")
     result = Tube::StatusParser.parse_updated(element)
     
     assert_equal(Time.parse("12:12pm"), result)
   end
   
   def test_parse_line
-    document = Hpricot(%Q{<dt class="central">Central</dt> <dd>Good service</dd>})
-    element = document.at("dt")
+    document = Nokogiri::HTML(%Q{<dt class="central">Central</dt> <dd>Good service</dd>})
+    element = document.at_css("dt")
     result = Tube::StatusParser.parse_line(element)
     
     assert_equal("Central", result[:name])
@@ -30,8 +30,8 @@ class TestStatusParser < Test::Unit::TestCase
   end
   
   def test_parse_line_with_complex_name
-    document = Hpricot(%Q{<dt class="waterlooandcity">Waterloo &amp; City</dt> <dd></dd>})
-    element = document.at("dt")
+    document = Nokogiri::HTML(%Q{<dt class="waterlooandcity">Waterloo &amp; City</dt> <dd></dd>})
+    element = document.at_css("dt")
     result = Tube::StatusParser.parse_line(element)
     
     assert_equal("Waterloo & City", result[:name])
@@ -39,32 +39,32 @@ class TestStatusParser < Test::Unit::TestCase
   end
   
   def test_parse_status
-    document = Hpricot("<dd>Good service</dd>")
-    element = document.at("dd")
+    document = Nokogiri::HTML("<dd>Good service</dd>")
+    element = document.at_css("dd")
     result = Tube::StatusParser.parse_status(element)
     
     assert_equal("Good service", result[:headline])
   end
   
   def test_parse_status_with_problem
-    document = Hpricot(%Q{<dd class="problem">Part suspended</dd>})
-    element = document.at("dd")
+    document = Nokogiri::HTML(%Q{<dd class="problem">Part suspended</dd>})
+    element = document.at_css("dd")
     result = Tube::StatusParser.parse_status(element)
     
     assert_equal(true, result[:problem])
   end
   
   def test_parse_status_with_header
-    document = Hpricot(%Q{<dd><h3>Part suspended</h3></dd>})
-    element = document.at("dd")
+    document = Nokogiri::HTML(%Q{<dd><h3>Part suspended</h3></dd>})
+    element = document.at_css("dd")
     result = Tube::StatusParser.parse_status(element)
     
     assert_equal("Part suspended", result[:headline])
   end
   
   def test_parse_status_with_message
-    document = Hpricot(%Q{<dd class="problem"><h3>Part closure</h3><div class="message"><p>engineering works, etc...</p></div></dd>})
-    element = document.at("dd")
+    document = Nokogiri::HTML(%Q{<dd class="problem"><h3>Part closure</h3><div class="message"><p>engineering works, etc...</p></div></dd>})
+    element = document.at_css("dd")
     result = Tube::StatusParser.parse_status(element)
     
     assert_equal("Part closure", result[:headline])
@@ -73,34 +73,34 @@ class TestStatusParser < Test::Unit::TestCase
   end
   
   def test_parse_status_message
-    document = Hpricot(%Q{<div><p>engineering works, etc...</p></div>})
-    elements = document.search("div p")
+    document = Nokogiri::HTML(%Q{<div><p>engineering works, etc...</p></div>})
+    elements = document.css("div p")
     result = Tube::StatusParser.parse_status_message(elements)
     
     assert_equal("engineering works, etc...", result)
   end
   
   def test_parse_status_message_with_multi_paragraph_message
-    document = Hpricot(%Q{<div><p>Rail replacement bus</p><p>Service A: details...</p></div>})
-    elements = document.search("div p")
+    document = Nokogiri::HTML(%Q{<div><p>Rail replacement bus</p><p>Service A: details...</p></div>})
+    elements = document.css("div p")
     result = Tube::StatusParser.parse_status_message(elements)
     
     assert_equal("Rail replacement bus\nService A: details...", result)
   end
   
   def test_parse_status_message_removes_anchor_from_message
-    document = Hpricot(%Q{<div><p>Closed Sunday.</p><p><a href="/transform">See how we are transforming the Tube</a></p></div>})
-    elements = document.search("div p")
+    document = Nokogiri::HTML(%Q{<div><p>Closed Sunday.</p><p><a href="/transform">See how we are transforming the Tube</a></p></div>})
+    elements = document.css("div p")
     result = Tube::StatusParser.parse_status_message(elements)
     
     assert_equal("Closed Sunday.", result)
   end
   
   def test_parse_station_group
-    document = Hpricot(%Q{<dt>Closed stations</dt>
+    document = Nokogiri::HTML(%Q{<dt>Closed stations</dt>
     <dd><h3>Bank</h3><div class="message"><p>Closed due to excessive noise.</p></div></dd>
     <dd><h3>Holborn</h3><div class="message"><p>Closed due to fire investigation.</p></div></dd>})
-    element = document.at("dt")
+    element = document.at_css("dt")
     result = Tube::StatusParser.parse_station_group(element)
     
     assert_equal("Closed stations", result[:name])
@@ -109,8 +109,8 @@ class TestStatusParser < Test::Unit::TestCase
   end
   
   def test_parse_station
-    document = Hpricot(%Q{<dd><h3>Bank</h3><div class="message"><p>Closed due to excessive noise.</p></div></dd>})
-    element = document.at("dd")
+    document = Nokogiri::HTML(%Q{<dd><h3>Bank</h3><div class="message"><p>Closed due to excessive noise.</p></div></dd>})
+    element = document.at_css("dd")
     result = Tube::StatusParser.parse_station(element)
     
     assert_equal("Bank", result[:name])

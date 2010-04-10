@@ -1,7 +1,7 @@
 require 'time'
 require 'date'
 require 'rubygems'
-require 'hpricot'
+require 'nokogiri'
 
 module Tube # :nodoc:
   module StatusParser # :nodoc:
@@ -9,16 +9,16 @@ module Tube # :nodoc:
     
     def parse( html_doc )
       html_doc.gsub!("&nbsp;", " ")
-      service_board = Hpricot( html_doc ).at( "#service-board" )
+      service_board = Nokogiri::HTML( html_doc ).at_css( "#service-board" )
       
-      updated_element = service_board.previous_sibling.children.first
+      updated_element = service_board.previous_element
       updated = parse_updated( updated_element )
       
-      lines = service_board.search( "dl#lines dt" ).map do |line_element|
+      lines = service_board.css( "dl#lines dt" ).map do |line_element|
         parse_line( line_element )
       end
       
-      station_group_elements = service_board.search( "dl#stations dt" )
+      station_group_elements = service_board.css( "dl#stations dt" )
       station_groups = station_group_elements.map do |station_group_element|
         parse_station_group( station_group_element )
       end
@@ -27,40 +27,40 @@ module Tube # :nodoc:
     end
     
     def parse_updated( updated_element )
-      time_text = updated_element.inner_text.match( /(\d?\d:\d\d)/ )[0]
+      time_text = updated_element.content.match( /(\d?\d:\d\d)/ )[0]
       time_zone = if is_bst? then "+0100" else "+0000" end
       
       Time.parse( "#{time_text} #{time_zone}" )
     end
     
     def parse_line( line_element )
-      name = line_element.inner_text.strip
-      html_class = line_element.attributes["class"]
-      status = parse_status( line_element.next_sibling )
+      name = line_element.content.strip
+      html_class = line_element["class"]
+      status = parse_status( line_element.next_element )
       
       {:name => name, :html_class => html_class, :status => status}
     end
     
     def parse_status( status_element )
-      header = status_element.at( "h3" )
+      header = status_element.at_css( "h3" )
       
       if header
-        headline = header.inner_text.strip
-        message = parse_status_message( status_element.search( "div.message p" ) )
+        headline = header.content.strip
+        message = parse_status_message( status_element.css( "div.message p" ) )
       else
-        headline = status_element.inner_text.strip
+        headline = status_element.content.strip
       end
-      problem = status_element.attributes["class"] == "problem"
+      problem = status_element["class"] == "problem"
       
       {:headline => headline, :problem => problem, :message => message}
     end
     
     def parse_station_group( station_group_element )
-      name = station_group_element.inner_text.strip
+      name = station_group_element.content.strip
       stations = []
       
       station_element = station_group_element
-      while station_element = station_element.next_sibling
+      while station_element = station_element.next_element
         if station_element.to_html =~ /^<dd/
           stations.push( parse_station( station_element ) )
         elsif station_element.to_html =~ /^<dt/
@@ -72,8 +72,8 @@ module Tube # :nodoc:
     end
     
     def parse_station( station_element )
-      name = station_element.at( "h3" ).inner_text.strip
-      message = parse_status_message( station_element.search("div.message p") )
+      name = station_element.at_css( "h3" ).content.strip
+      message = parse_status_message( station_element.css("div.message p") )
       
       {:name => name, :message => message}
     end

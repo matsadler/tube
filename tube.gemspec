@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name = "tube"
-  s.version = "0.2.1"
+  s.version = "0.2.2"
   s.summary = "Access the status of the London Underground network."
   s.description = "A simple Ruby library to access the status of the London Underground network."
   s.files = Dir["lib/**/*.rb"] + Dir["test/*.*"]
@@ -12,5 +12,5 @@ Gem::Specification.new do |s|
   s.author = "Matthew Sadler"
   s.email = "mat@sourcetagsandcodes.com"
   s.homepage = "http://github.com/matsadler/tube"
-  s.add_dependency('hpricot', [">= 0.8.1"])
+  s.add_dependency('nokogiri', [">= 1.4.1"])
 end
