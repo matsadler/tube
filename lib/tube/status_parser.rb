@@ -8,7 +8,7 @@ module Tube # :nodoc:
     extend self
     
     def parse( html_doc )
-      html_doc.gsub!("&nbsp;", " ")
+      html_doc.gsub!( /&nbsp;/, " " )
       service_board = Nokogiri::HTML( html_doc ).at_css( "#service-board" )
       
       updated_element = service_board.previous_element
@@ -73,7 +73,7 @@ module Tube # :nodoc:
     
     def parse_station( station_element )
       name = station_element.at_css( "h3" ).content.strip
-      message = parse_status_message( station_element.css("div.message p") )
+      message = parse_status_message( station_element.css( "div.message p" ) )
       
       {:name => name, :message => message}
     end
