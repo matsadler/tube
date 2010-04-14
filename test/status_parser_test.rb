@@ -20,8 +20,8 @@ class TestStatusParser < Test::Unit::TestCase
   end
   
   def test_parse_line
-    document = Nokogiri::HTML(%Q{<dt class="central">Central</dt> <dd>Good service</dd>})
-    element = document.at_css("dt")
+    document = Nokogiri::HTML(%Q{<li class="central ltn-line"><h3 class="central ltn-name">Central</h3><div class="status">Good service</div></li>})
+    element = document.at_css("li")
     result = Tube::StatusParser.parse_line(element)
     
     assert_equal("Central", result[:name])
@@ -30,8 +30,8 @@ class TestStatusParser < Test::Unit::TestCase
   end
   
   def test_parse_line_with_complex_name
-    document = Nokogiri::HTML(%Q{<dt class="waterlooandcity">Waterloo &amp; City</dt> <dd></dd>})
-    element = document.at_css("dt")
+    document = Nokogiri::HTML(%Q{<li class="waterlooandcity ltn-line"><h3 class="waterlooandcity ltn-name">Waterloo &amp; City</h3><div class="status">Good service</div></li>})
+    element = document.at_css("li")
     result = Tube::StatusParser.parse_line(element)
     
     assert_equal("Waterloo & City", result[:name])
@@ -39,32 +39,32 @@ class TestStatusParser < Test::Unit::TestCase
   end
   
   def test_parse_status
-    document = Nokogiri::HTML("<dd>Good service</dd>")
-    element = document.at_css("dd")
+    document = Nokogiri::HTML(%Q{<div class="status">Good service</div>})
+    element = document.at_css("div")
     result = Tube::StatusParser.parse_status(element)
     
     assert_equal("Good service", result[:headline])
   end
   
   def test_parse_status_with_problem
-    document = Nokogiri::HTML(%Q{<dd class="problem">Part suspended</dd>})
-    element = document.at_css("dd")
+    document = Nokogiri::HTML(%Q{<div class="problem status">Part suspended</div>})
+    element = document.at_css("div")
     result = Tube::StatusParser.parse_status(element)
     
     assert_equal(true, result[:problem])
   end
   
   def test_parse_status_with_header
-    document = Nokogiri::HTML(%Q{<dd><h3>Part suspended</h3></dd>})
-    element = document.at_css("dd")
+    document = Nokogiri::HTML(%Q{<div class="status"><h4 class="ltn-title">Part suspended</h4></div>})
+    element = document.at_css("div")
     result = Tube::StatusParser.parse_status(element)
     
     assert_equal("Part suspended", result[:headline])
   end
   
   def test_parse_status_with_message
-    document = Nokogiri::HTML(%Q{<dd class="problem"><h3>Part closure</h3><div class="message"><p>engineering works, etc...</p></div></dd>})
-    element = document.at_css("dd")
+    document = Nokogiri::HTML(%Q{<div class="problem status"><h4 class="ltn-title">Part closure</h4><div class="message"><p>engineering works, etc...</p></div></div>})
+    element = document.at_css("div.status")
     result = Tube::StatusParser.parse_status(element)
     
     assert_equal("Part closure", result[:headline])
@@ -89,18 +89,18 @@ class TestStatusParser < Test::Unit::TestCase
   end
   
   def test_parse_status_message_removes_anchor_from_message
-    document = Nokogiri::HTML(%Q{<div><p>Closed Sunday.</p><p><a href="/transform">See how we are transforming the Tube</a></p></div>})
-    elements = document.css("div p")
+    document = Nokogiri::HTML(%Q{<div><p>Closed Sunday.</p><p><a href="/projectsandschemes"><p>Click for further information.</p></a></p></div>})
+    elements = document.css("div > p")
     result = Tube::StatusParser.parse_status_message(elements)
     
     assert_equal("Closed Sunday.", result)
   end
   
   def test_parse_station_group
-    document = Nokogiri::HTML(%Q{<dt>Closed stations</dt>
-    <dd><h3>Bank</h3><div class="message"><p>Closed due to excessive noise.</p></div></dd>
-    <dd><h3>Holborn</h3><div class="message"><p>Closed due to fire investigation.</p></div></dd>})
-    element = document.at_css("dt")
+    document = Nokogiri::HTML(%Q{<li class="ltn-closed"><h3>Closed stations</h3><ul>
+    <li class="ltn-station" id="stop-1000013"><h4 class="ltn-name">Bank</h4><div class="message"><p>Closed due to excessive noise.</p></div></li>
+    <li class="ltn-station" id="stop-10000xx"><h4 class="ltn-name">Holborn</h4><div class="message"><p>Closed due to fire investigation.</p></div></li></ul></li>})
+    element = document.at_css("li.ltn-closed")
     result = Tube::StatusParser.parse_station_group(element)
     
     assert_equal("Closed stations", result[:name])
@@ -109,8 +109,8 @@ class TestStatusParser < Test::Unit::TestCase
   end
   
   def test_parse_station
-    document = Nokogiri::HTML(%Q{<dd><h3>Bank</h3><div class="message"><p>Closed due to excessive noise.</p></div></dd>})
-    element = document.at_css("dd")
+    document = Nokogiri::HTML(%Q{<li class="ltn-station" id="stop-1000013"><h4 class="ltn-name">Bank</h4><div class="message"><p>Closed due to excessive noise.</p></div></li>})
+    element = document.at_css("li")
     result = Tube::StatusParser.parse_station(element)
     
     assert_equal("Bank", result[:name])

@@ -14,9 +14,9 @@ module Tube # :nodoc:
       updated_element = service_board.previous_element
       updated = parse_updated( updated_element )
       
-      lines = service_board.css( "dl#lines dt" ).map( &method( :parse_line ) )
+      lines = service_board.css( "ul#lines li.ltn-line" ).map( &method( :parse_line ) )
       
-      station_group_elements = service_board.css( "dl#stations dt" )
+      station_group_elements = service_board.css( "ul#stations > li" )
       station_groups = station_group_elements.map(&method(:parse_station_group))
       
       {:updated => updated, :lines => lines, :station_groups => station_groups}
@@ -30,15 +30,15 @@ module Tube # :nodoc:
     end
     
     def parse_line( line_element )
-      name = line_element.content.strip
-      html_class = line_element["class"]
-      status = parse_status( line_element.next_element )
+      name = line_element.at_css( "h3.ltn-name" ).content
+      html_class = line_element["class"].split.first
+      status = parse_status( line_element.at_css( "div.status" ) )
       
       {:name => name, :html_class => html_class, :status => status}
     end
     
     def parse_status( status_element )
-      header = status_element.at_css( "h3" )
+      header = status_element.at_css( "h4" )
       
       if header
         headline = header.content.strip
@@ -46,30 +46,26 @@ module Tube # :nodoc:
       else
         headline = status_element.content.strip
       end
-      problem = status_element["class"] == "problem"
+      problem = status_element["class"].split.include?( "problem" )
       
       {:headline => headline, :problem => problem, :message => message}
     end
     
     def parse_station_group( station_group_element )
-      name = station_group_element.content.strip
-      stations = []
+      name = station_group_element.at_css( "h3" ).content
       
-      station_element = station_group_element
-      while station_element = station_element.next_element
-        if station_element.to_html =~ /^<dd/
-          stations.push( parse_station( station_element ) )
-        elsif station_element.to_html =~ /^<dt/
-          break
-        end
+      station_elements = station_group_element.css( "ul li.ltn-station" )
+      
+      stations = station_elements.map do |station_element|
+        parse_station( station_element )
       end
       
       {:name => name, :stations => stations}
     end
     
     def parse_station( station_element )
-      name = station_element.at_css( "h3" ).content.strip
-      message = parse_status_message( station_element.css( "div.message p" ) )
+      name = station_element.at_css( "h4.ltn-name" ).content.strip
+      message = parse_status_message( station_element.css( "div.message > p" ) )
       
       {:name => name, :message => message}
     end
