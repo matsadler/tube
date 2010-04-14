@@ -11,10 +11,11 @@ module Tube # :nodoc:
       html_doc.gsub!( /&nbsp;/, " " )
       service_board = Nokogiri::HTML( html_doc ).at_css( "#service-board" )
       
-      updated_element = service_board.previous_element
+      updated_element = service_board.previous_element.at_css( "h2" )
       updated = parse_updated( updated_element )
       
-      lines = service_board.css( "ul#lines li.ltn-line" ).map( &method( :parse_line ) )
+      line_elements = service_board.css( "ul#lines > li.ltn-line" )
+      lines = line_elements.map( &method( :parse_line ) )
       
       station_group_elements = service_board.css( "ul#stations > li" )
       station_groups = station_group_elements.map(&method(:parse_station_group))
@@ -38,11 +39,11 @@ module Tube # :nodoc:
     end
     
     def parse_status( status_element )
-      header = status_element.at_css( "h4" )
+      header = status_element.at_css( "h4.ltn-title" )
       
       if header
         headline = header.content.strip
-        message = parse_status_message( status_element.css( "div.message p" ) )
+        message = parse_status_message( status_element.css("div.message > p") )
       else
         headline = status_element.content.strip
       end
@@ -54,7 +55,7 @@ module Tube # :nodoc:
     def parse_station_group( station_group_element )
       name = station_group_element.at_css( "h3" ).content
       
-      station_elements = station_group_element.css( "ul li.ltn-station" )
+      station_elements = station_group_element.css( "ul > li.ltn-station" )
       
       stations = station_elements.map do |station_element|
         parse_station( station_element )
