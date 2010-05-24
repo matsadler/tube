@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name = "tube"
-  s.version = "0.2.3"
+  s.version = "0.2.4"
   s.summary = "Access the status of the London Underground network."
   s.description = "A simple Ruby library to access the status of the London Underground network."
   s.files = Dir["lib/**/*.rb"] + Dir["test/*.*"] + Dir["examples/*.rb"]
