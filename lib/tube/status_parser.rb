@@ -34,7 +34,7 @@ module Tube # :nodoc:
     
     def parse_line( line_element )
       name = line_element.at_css( "h3.ltn-name" ).content
-      html_class = line_element["class"].split.first
+      html_class = line_element["class"].split.last
       status = parse_status( line_element.at_css( "div.status" ) )
       
       {:name => name, :html_class => html_class, :status => status}

@@ -20,7 +20,7 @@ class TestStatusParser < Test::Unit::TestCase
   end
   
   def test_parse_line
-    document = Nokogiri::HTML(%Q{<li class="central ltn-line"><h3 class="central ltn-name">Central</h3><div class="status">Good service</div></li>})
+    document = Nokogiri::HTML(%Q{<li class="ltn-line central"><h3 class="central ltn-name">Central</h3><div class="status">Good service</div></li>})
     element = document.at_css("li")
     result = Tube::StatusParser.parse_line(element)
     
@@ -30,7 +30,7 @@ class TestStatusParser < Test::Unit::TestCase
   end
   
   def test_parse_line_with_complex_name
-    document = Nokogiri::HTML(%Q{<li class="waterlooandcity ltn-line"><h3 class="waterlooandcity ltn-name">Waterloo &amp; City</h3><div class="status">Good service</div></li>})
+    document = Nokogiri::HTML(%Q{<li class="ltn-line waterlooandcity"><h3 class="waterlooandcity ltn-name">Waterloo &amp; City</h3><div class="status">Good service</div></li>})
     element = document.at_css("li")
     result = Tube::StatusParser.parse_line(element)
     
