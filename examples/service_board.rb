@@ -7,7 +7,7 @@ class String
 end
 
 LINE_COLORS = {
-  :bakerloo => [:bright_white, :yellow_bg],
+  :bakerloo => [:bright_white, :red_bg],
   :central => [:white, :bright_red_bg],
   :circle => [:blue, :bright_yellow_bg],
   :district => [:bright_white, :green_bg],
@@ -17,7 +17,9 @@ LINE_COLORS = {
   :northern => [:bright_white, :black_bg],
   :piccadilly => [:bright_white, :blue_bg],
   :victoria => [:bright_white, :bright_blue_bg],
-  :waterlooandcity => [:blue, :bright_cyan_bg]
+  :waterlooandcity => [:blue, :bright_cyan_bg],
+  :dlr => [:bright_white, :cyan_bg],
+  :overground => [:bright_white, :yellow_bg]
 }
 STATUS_COLOR = [:blue, :bright_white_bg]
 PROBLEM_COLOR = STATUS_COLOR + [:negative]
