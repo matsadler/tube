@@ -9,10 +9,12 @@ module Tube # :nodoc:
     
     def parse( html_doc )
       html_doc.gsub!( /&nbsp;/, " " )
-      service_board = Nokogiri::HTML( html_doc ).at_css( "#service-board" )
+      doc = Nokogiri::HTML( html_doc )
       
-      updated_element = service_board.previous_element.at_css( "h2" )
+      updated_element = doc.at_css( "div.hd-row > h2" )
       updated = parse_updated( updated_element )
+      
+      service_board = doc.at_css( "#service-board" )
       
       line_elements = service_board.css( "ul#lines > li.ltn-line" )
       lines = line_elements.map( &method( :parse_line ) )
