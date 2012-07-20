@@ -7,7 +7,7 @@ A simple MIT licensed Ruby library to access the status of the London Undergroun
     $ gem install tube
 
 == Examples
-    require 'tube/status'
+    require "tube/status"
     
     status = Tube::Status.new
     

@@ -12,5 +12,5 @@ Gem::Specification.new do |s|
   s.author = "Matthew Sadler"
   s.email = "mat@sourcetagsandcodes.com"
   s.homepage = "http://github.com/matsadler/tube"
-  s.add_dependency('nokogiri', [">= 1.4.1"])
+  s.add_dependency("nokogiri", [">= 1.4.1"])
 end

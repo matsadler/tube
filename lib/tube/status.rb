@@ -1,4 +1,4 @@
-require 'open-uri'
+require "open-uri"
 
 require "#{File.dirname(__FILE__)}/status_parser"
 require "#{File.dirname(__FILE__)}/line"
@@ -16,7 +16,7 @@ module Tube # :nodoc:
   # it will show up in the lines array automatically.
   # 
   # ==Example Usage
-  #  require 'tube/status'
+  #  require "tube/status"
   #  
   #  status = Tube::Status.new
   #  

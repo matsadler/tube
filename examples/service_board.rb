@@ -1,6 +1,6 @@
-require 'rubygems'
-require 'tube/status'
-require 'terminal_color/ansi'
+require "rubygems"
+require "tube/status"
+require "terminal_color/ansi"
 
 class String
   include Terminal::Color::ANSI

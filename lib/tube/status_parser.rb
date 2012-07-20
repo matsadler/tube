@@ -1,7 +1,7 @@
-require 'time'
-require 'date'
-require 'rubygems'
-require 'nokogiri'
+require "time"
+require "date"
+require "rubygems"
+require "nokogiri"
 
 module Tube # :nodoc:
   module StatusParser # :nodoc:
