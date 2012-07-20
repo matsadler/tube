@@ -76,9 +76,8 @@ module Tube # :nodoc:
     
     def parse_status_message(messages)
       text_messages = messages.map do |message|
-        if message.children
-          message.children.select {|child| child.text?}.join(" ")
-        end
+        children = message.children
+        children.select {|child| child.text?}.join(" ") if children
       end.compact
       text_messages.reject! {|m| m.empty?}
       
