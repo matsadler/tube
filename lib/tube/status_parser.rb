@@ -17,10 +17,10 @@ module Tube # :nodoc:
       service_board = doc.at_css("#service-board")
       
       line_elements = service_board.css("ul#lines > li.ltn-line")
-      lines = line_elements.map(&method(:parse_line))
+      lines = line_elements.map {|e| parse_line(e)}
       
       station_group_elements = service_board.css("ul#stations > li")
-      station_groups = station_group_elements.map(&method(:parse_station_group))
+      station_groups = station_group_elements.map {|e| parse_station_group(e)}
       
       {:updated => updated, :lines => lines, :station_groups => station_groups}
     end
