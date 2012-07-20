@@ -35,7 +35,7 @@ module Tube # :nodoc:
     def parse_line(line_element)
       name_element = line_element.at_css("h3.ltn-name")
       name = name_element.content
-      html_class = name_element["class"].split.first
+      html_class = name_element["class"].split(" ").first
       status = parse_status(line_element.at_css("div.status"))
       
       {:name => name, :html_class => html_class, :status => status}
@@ -50,7 +50,7 @@ module Tube # :nodoc:
       else
         headline = status_element.content.strip
       end
-      problem = status_element["class"].split.include?("problem")
+      problem = status_element["class"].split(" ").include?("problem")
       
       {:headline => headline, :problem => problem, :message => message}
     end
