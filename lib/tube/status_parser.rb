@@ -27,7 +27,7 @@ module Tube # :nodoc:
     
     def parse_updated(updated_element)
       time_text = updated_element.content.match(/(\d?\d:\d\d)/)[0]
-      time_zone = if is_bst? then "+0100" else "+0000" end
+      time_zone = is_bst? ? "+0100" : "+0000"
       
       Time.parse("#{time_text} #{time_zone}")
     end
@@ -118,7 +118,7 @@ module Tube # :nodoc:
       
       week_day = start_of_next_month.wday
       
-      distance_from_sunday = if week_day == 0 then 7 else week_day end
+      distance_from_sunday = week_day == 0 ? 7 : week_day
       start_of_next_month - distance_from_sunday
     end
     

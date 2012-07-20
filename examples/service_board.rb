@@ -34,6 +34,6 @@ puts "  Live travel news".style(:bold), "  Last update: #{formatted_time}", ""
 status.lines.each do |line|
   print "  "
   printf(" %-#{longest_name}s ".color(*LINE_COLORS[line.id]), line.name)
-  status_color = if line.problem? then PROBLEM_COLOR else STATUS_COLOR end
+  status_color = line.problem? ? PROBLEM_COLOR : STATUS_COLOR
   printf(" %-#{longest_status}s \n".color(*status_color), line.status)
 end
