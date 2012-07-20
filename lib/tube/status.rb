@@ -1,8 +1,8 @@
 require 'open-uri'
 
-require "#{File.dirname( __FILE__ )}/status_parser"
-require "#{File.dirname( __FILE__ )}/line"
-require "#{File.dirname( __FILE__ )}/station"
+require "#{File.dirname(__FILE__)}/status_parser"
+require "#{File.dirname(__FILE__)}/line"
+require "#{File.dirname(__FILE__)}/station"
 
 module Tube # :nodoc:
   
@@ -50,9 +50,9 @@ module Tube # :nodoc:
     # Request and parse the status of the London Underground network from the
     # tfl.gov.uk "Live travel news" page.
     # 
-    def initialize( url=
-        "http://www.tfl.gov.uk/tfl/livetravelnews/realtime/tube/default.html" )
-      results = Tube::StatusParser.parse( open( url ).read )
+    def initialize(url=
+        "http://www.tfl.gov.uk/tfl/livetravelnews/realtime/tube/default.html")
+      results = Tube::StatusParser.parse(open(url).read)
       @updated = results[:updated]
       
       @lines = results[:lines].map do |line|
@@ -62,12 +62,12 @@ module Tube # :nodoc:
         problem = line[:status][:problem]
         message = line[:status][:message]
         
-        Line.new( id, name, status, problem, message )
+        Line.new(id, name, status, problem, message)
       end
       
-      @station_groups = results[:station_groups].inject( {} ) do |memo, group|
+      @station_groups = results[:station_groups].inject({}) do |memo, group|
         stations = group[:stations].map do |station|
-          Station.new( station[:name], station[:message] )
+          Station.new(station[:name], station[:message])
         end
         
         memo[group[:name]] = stations

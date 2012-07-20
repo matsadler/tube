@@ -11,7 +11,7 @@ module Tube # :nodoc:
     # 
     # Create a new Station.
     # 
-    def initialize( name, message )
+    def initialize(name, message)
       @name = name
       @message = message
     end

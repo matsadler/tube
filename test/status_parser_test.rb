@@ -121,7 +121,7 @@ class TestStatusParser < Test::Unit::TestCase
   def test_parse
     # the file used here is an approximation of the most important bits of the
     # Live travel news at http://www.tfl.gov.uk/tfl/livetravelnews/realtime/tube/default.html
-    document = open("#{File.dirname( __FILE__ )}/dummy.html").read
+    document = open("#{File.dirname(__FILE__)}/dummy.html").read
     result = Tube::StatusParser.parse(document)
     
     assert(result)

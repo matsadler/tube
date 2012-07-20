@@ -12,7 +12,7 @@ module Tube # :nodoc:
     # 
     # Create a new Line.
     # 
-    def initialize( id, name, status, problem, message=nil )
+    def initialize(id, name, status, problem, message=nil)
       @id = id
       @name = name
       @status = status
