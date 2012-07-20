@@ -103,7 +103,12 @@ module Tube # :nodoc:
       bst_end = Time.gm( bst_end.year, bst_end.month, bst_end.day )
       bst_end += one_hour
       
-      (bst_start..bst_end).include?( Time.now.getgm )
+      bst = (bst_start..bst_end)
+      if bst.respond_to?(:cover?)
+        bst.cover?( Time.now.getgm )
+      else
+        bst.include?( Time.now.getgm )
+      end
     end
     
     # :call-seq: last_sunday_of_month(month_name) -> date

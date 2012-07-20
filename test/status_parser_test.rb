@@ -1,6 +1,6 @@
 require "test/unit"
 
-require "#{File.dirname( __FILE__ )}/../lib/tube/status"
+require File.expand_path("../../lib/tube/status", __FILE__)
 
 class TestStatusParser < Test::Unit::TestCase
   def test_parse_updated
