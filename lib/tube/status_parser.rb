@@ -24,11 +24,18 @@ module Tube # :nodoc:
       {:updated => updated, :lines => lines, :station_groups => station_groups}
     end
     
-    def parse_updated(updated_element)
-      time_text = updated_element.content.match(/\d?\d:\d\d/)[0]
-      time_zone = british_summer_time? ? "+0100" : "+0000"
+    def parse_updated(updated_element, now=Time.now)
+      time_text = updated_element.content.match(/(\d?\d):(\d\d)/)
+      hours = time_text[1].to_i
+      minutes = time_text[2].to_i
+      time_zone = british_summer_time?(now) ? "+01:00" : "+00:00"
       
-      Time.parse("#{time_text} #{time_zone}")
+      begin
+        Time.new(now.year, now.month, now.day, hours, minutes, 0, time_zone)
+      rescue ArgumentError
+        # fallback for ruby < 1.9.2
+        Time.parse("#{hours}:#{minutes} #{time_zone}")
+      end
     end
     
     def parse_line(line_element)
@@ -89,11 +96,11 @@ module Tube # :nodoc:
     # 
     # Is British Summer Time currently in effect.
     # 
-    def british_summer_time?(now=Time.now)
-      now.gmtime
-      bst_start = last_sunday_1_am(now.year, 3) # march
-      bst_end = last_sunday_1_am(now.year, 10) # october
-      now >= bst_start && now < bst_end
+    def british_summer_time?(time)
+      time = time.getgm
+      bst_start = last_sunday_1_am(time.year, 3) # march
+      bst_end = last_sunday_1_am(time.year, 10) # october
+      time >= bst_start && time < bst_end
     end
     
     ONE_DAY = 86400 # :nodoc:
