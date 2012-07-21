@@ -1,0 +1,85 @@
+#!/usr/bin/env ruby
+require File.expand_path("../../lib/tube/status", __FILE__)
+
+ANSI_COLOR = {
+  :black => 30,
+  :red => 31,
+  :green => 32,
+  :yellow => 33,
+  :blue => 34,
+  :magenta => 35,
+  :cyan => 36,
+  :white => 37,
+  
+  :bright_black => 90,
+  :bright_red => 91,
+  :bright_green => 92,
+  :bright_yellow => 93,
+  :bright_blue => 94,
+  :bright_magenta => 95,
+  :bright_cyan => 96,
+  :bright_white => 97,
+  
+  :black_background => 40,
+  :red_background => 41,
+  :green_background => 42,
+  :yellow_background => 43,
+  :blue_background => 44,
+  :magenta_background => 45,
+  :cyan_background => 46,
+  :white_background => 47,
+  
+  :bright_black_background => 100,
+  :bright_red_background => 101,
+  :bright_green_background => 102,
+  :bright_yellow_background => 103,
+  :bright_blue_background => 104,
+  :bright_magenta_background => 105,
+  :bright_cyan_background => 106,
+  :bright_white_background => 107,
+  
+  :reset => 0,
+  :reset_foreground => 39,
+  :reset_background => 49,
+  
+  :bold => 1,
+  :negative => 7,
+  :underline => 4}
+
+LINE_COLORS = {
+  :bakerloo => [:bright_white, :red_background],
+  :central => [:white, :bright_red_background],
+  :circle => [:blue, :bright_yellow_background],
+  :district => [:bright_white, :green_background],
+  :hammersmithandcity => [:blue, :bright_magenta_background],
+  :jubilee => [:bright_white, :bright_black_background],
+  :metropolitan => [:bright_white, :magenta_background],
+  :northern => [:bright_white, :black_background],
+  :piccadilly => [:bright_white, :blue_background],
+  :victoria => [:bright_white, :bright_blue_background],
+  :waterlooandcity => [:blue, :bright_cyan_background],
+  :dlr => [:bright_white, :cyan_background],
+  :overground => [:bright_white, :yellow_background]
+}
+STATUS_COLOR = [:bright_black, :bright_white_background]
+PROBLEM_COLOR = [:blue, :bright_white_background, :bold]
+
+def color(string, *args)
+  colors = args.map {|s| ANSI_COLOR[s]}
+  "\e[#{colors.join(";")}m#{string}\e[0m"
+end
+
+status = Tube::Status.new
+
+longest_name = status.lines.map {|l| l.name.length}.max
+longest_status = status.lines.map {|l| l.status.length}.max
+formatted_time = status.updated.strftime("%H:%M").downcase.sub(/^0/, "")
+
+puts color("  Service updates", :bold) + " at #{formatted_time}", ""
+status.lines.each do |line|
+  print "  "
+  printf(color(" %-#{longest_name}s ", *LINE_COLORS[line.id]), line.name)
+  status_color = line.problem? ? PROBLEM_COLOR : STATUS_COLOR
+  printf(color(" %-#{longest_status}s ", *status_color), line.status)
+  puts
+end
