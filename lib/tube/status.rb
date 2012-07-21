@@ -1,8 +1,7 @@
 require "open-uri"
-
-require "#{File.dirname(__FILE__)}/status_parser"
-require "#{File.dirname(__FILE__)}/line"
-require "#{File.dirname(__FILE__)}/station"
+require File.expand_path("../status_parser", __FILE__)
+require File.expand_path("../line", __FILE__)
+require File.expand_path("../station", __FILE__)
 
 module Tube # :nodoc:
   
