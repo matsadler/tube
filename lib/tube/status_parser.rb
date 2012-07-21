@@ -1,5 +1,4 @@
 require "time"
-require "date"
 require "rubygems"
 require "nokogiri"
 
@@ -27,7 +26,7 @@ module Tube # :nodoc:
     
     def parse_updated(updated_element)
       time_text = updated_element.content.match(/\d?\d:\d\d/)[0]
-      time_zone = is_bst? ? "+0100" : "+0000"
+      time_zone = british_summer_time? ? "+0100" : "+0000"
       
       Time.parse("#{time_text} #{time_zone}")
     end
@@ -86,54 +85,25 @@ module Tube # :nodoc:
     
     private
     
-    # :call-seq: is_bst? -> bool
+    # :call-seq: british_summer_time? -> bool
     # 
     # Is British Summer Time currently in effect.
     # 
-    def is_bst?
-      bst_start = last_sunday_of_month("march")
-      bst_end = last_sunday_of_month("october")
-      
-      one_hour = 3600
-      
-      bst_start = Time.gm(bst_start.year, bst_start.month, bst_start.day)
-      bst_start += one_hour
-      
-      bst_end = Time.gm(bst_end.year, bst_end.month, bst_end.day)
-      bst_end += one_hour
-      
-      bst = (bst_start..bst_end)
-      if bst.respond_to?(:cover?)
-        bst.cover?(Time.now.getgm)
-      else
-        bst.include?(Time.now.getgm)
-      end
+    def british_summer_time?(now=Time.now)
+      now.gmtime
+      bst_start = last_sunday_1_am(now.year, 3) # march
+      bst_end = last_sunday_1_am(now.year, 10) # october
+      now >= bst_start && now < bst_end
     end
     
-    # :call-seq: last_sunday_of_month(month_name) -> date
-    # 
-    def last_sunday_of_month(month)
-      start_of_next_month = Date.parse(next_month_name(month))
-      
-      week_day = start_of_next_month.wday
-      
-      distance_from_sunday = week_day == 0 ? 7 : week_day
-      start_of_next_month - distance_from_sunday
-    end
+    ONE_DAY = 86400 # :nodoc:
     
-    # :call-seq: next_month_name(month_name) -> string
+    # :call-seq: last_sunday_1_am(year, month) -> time
     # 
-    def next_month_name(month)
-      index = Date::MONTHNAMES.index(month.capitalize)
-      index ||= ABBR_MONTHNAMES.index(month.capitalize)
-      
-      index += 1
-      
-      if index >= 12
-        index = 1
-      end
-      
-      Date::MONTHNAMES[index]
+    def last_sunday_1_am(year, month)
+      start_of_next_month = Time.gm(year, month % 12 + 1, 1, 1)
+      end_of_month = start_of_next_month - ONE_DAY
+      end_of_month - end_of_month.wday * ONE_DAY
     end
     
   end
