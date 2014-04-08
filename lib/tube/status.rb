@@ -1,18 +1,14 @@
-require "open-uri"
-require File.expand_path("../status_parser", __FILE__)
+require File.expand_path("../tfl_client", __FILE__)
 require File.expand_path("../line", __FILE__)
 require File.expand_path("../station", __FILE__)
 
 module Tube # :nodoc:
   
-  # Models the status of the London Underground network as displayed on
-  # http://www.tfl.gov.uk/tfl/livetravelnews/realtime/tube/default.html.
+  # Models the status of the London Underground network as returned by
+  # http://api.tfl.gov.uk.
   # 
-  # It is a very thin abstraction over the tfl website, as a result the access
-  # to data on stations is somewhat different to lines due to the differing
-  # presentation.
-  # However it is very dynamic, for example should the East London line return
-  # it will show up in the lines array automatically.
+  # Before TFL made an API available this library scraped the TFL website, due
+  # to this the API provided doesn't (currently) match the TFL API very well.
   # 
   # ==Example Usage
   #  require "tube/status"
@@ -49,28 +45,28 @@ module Tube # :nodoc:
     # Request and parse the status of the London Underground network from the
     # tfl.gov.uk "Live travel news" page.
     # 
-    def initialize(url=
-        "http://www.tfl.gov.uk/tfl/livetravelnews/realtime/tube/default.html")
-      results = Tube::StatusParser.parse(open(url).read)
-      @updated = results[:updated]
+    def initialize(app_id=nil, app_key=nil, host="api.tfl.gov.uk", port=80)
+      client = TFLClient.new(app_id, app_key, host, port)
+      line_details = client.line_mode_status(modes: %W{tube dlr overground})
+      station_details = client.stop_point_mode_disruption(modes: %W{tube dlr overground})
       
-      @lines = results[:lines].map do |line|
-        id = line[:html_class].to_sym
-        name = line[:name]
-        status = line[:status][:headline]
-        problem = line[:status][:problem]
-        message = line[:status][:message]
+      @updated = Time.now
+      
+      @lines = line_details.map do |line|
+        id = line["id"].to_sym
+        name = line["name"]
+        status_details = line["lineStatuses"].first
+        status = status_details["statusSeverityDescription"]
+        problem = status_details["statusSeverity"] > 10
+        message = status_details["reason"]
         
         Line.new(id, name, status, problem, message)
       end
       
-      @station_groups = results[:station_groups].inject({}) do |memo, group|
-        stations = group[:stations].map do |station|
-          Station.new(station[:name], station[:message])
-        end
-        
-        memo[group[:name]] = stations
-        memo
+      @station_groups = {}
+      station_details.each do |detail|
+        station = Station.new(detail["commonName"], detail["description"])
+        (@station_groups[detail["type"]] ||= []).push(station)
       end
       
       self

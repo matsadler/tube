@@ -1,6 +1,13 @@
 = Tube/Status
 
-A simple MIT licensed Ruby library to access the status of the London Underground network as displayed on the Transport for London {Live travel news}[http://www.tfl.gov.uk/tfl/livetravelnews/realtime/tube/default.html] page.
+A simple MIT licensed Ruby library to access the status of the London
+Underground network as returned by the Transport for London
+{API}[http://api.tfl.gov.uk].
+
+Before the API was available this library scraped the data from the TFL
+website, at the moment the code has been updated to retain mostly the same Ruby
+API, while calling the new TFL API, rather than scrape the website. In the
+future this library may change to better match what TFL now make available.
 
 == Installation
 
@@ -32,5 +39,3 @@ A simple MIT licensed Ruby library to access the status of the London Undergroun
     status.reload
     status.updated.strftime("%I:%M%p")
     #=> "05:00PM"
-
-See the {documentation}[http://sourcetagsandcodes.com/codes/tube_status/doc/] for more details.
